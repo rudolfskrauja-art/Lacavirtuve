@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ed9a42">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Lāča virtuve</title>
+<style>
+:root{color-scheme:light dark;--bg:#f8efe2;--card:#fff;--text:#45362c;--muted:#8b7a6b;--border:#f0e2d0;--tint:#fff8ed;--tint2:#fff0d5;--orange:#ed9a42;--green:#5c9e64;--ok:#e5f6e3;--btntext:#382416;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1f1712;--card:#2d2219;--text:#f3e7d9;--muted:#bfae9c;--border:#4a3a2c;--tint:#3a2c20;--tint2:#4d3a22;--ok:#294029}}
+:root[data-theme="dark"]{--bg:#1f1712;--card:#2d2219;--text:#f3e7d9;--muted:#bfae9c;--border:#4a3a2c;--tint:#3a2c20;--tint2:#4d3a22;--ok:#294029}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font-family:"Nunito",Arial,sans-serif}
+button{font:inherit;cursor:pointer;touch-action:manipulation;color:var(--text)}
+button:focus-visible{outline:3px solid #4785e6;outline-offset:3px}
+button:disabled{cursor:not-allowed;opacity:.45}
+.game{width:min(100% - 24px,760px);margin:0 auto;padding:18px 0 30px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-icon{display:grid;place-items:center;width:52px;height:52px;border-radius:16px;background:#ffe0a8;font-size:32px}
+h1,h2,h3,p{margin-top:0}
+h1{margin-bottom:2px;font-size:clamp(21px,5vw,28px);font-weight:900}
+h2{margin-bottom:4px;font-size:20px;font-weight:900}
+h3{margin:16px 0 8px;font-size:15px;font-weight:900}
+.sub{margin:0;color:var(--muted);font-size:13px}
+.coins{padding:10px 14px;border:1px solid #f4d28d;border-radius:16px;background:#fff0c7;color:#45362c;font-weight:900}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.stat{padding:11px;border:1px solid var(--border);border-radius:16px;background:var(--card)}
+.stat span{display:block;color:var(--muted);font-size:12px}
+.stat strong{font-size:19px}
+.scene{position:relative;height:250px;overflow:hidden;border:5px solid var(--card);border-radius:24px;background:linear-gradient(#bce9f6 0,#e3f6e8 67%,#a4d48b 67%)}
+.sun{position:absolute;top:18px;right:24px;width:44px;height:44px;border-radius:50%;background:#ffdb72}
+.bear{position:absolute;top:50px;left:50%;transform:translateX(-50%);font-size:clamp(90px,22vw,130px);line-height:1.2;filter:drop-shadow(0 7px 2px #6b44232b)}
+.bear.happy{animation:bounce .55s ease}
+.bear.sad{filter:grayscale(.6)}
+.speech{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:max-content;max-width:70%;padding:8px 12px;border:2px solid #f1d4a9;border-radius:14px;background:#fff;color:#45362c;font-size:13px;font-weight:800;text-align:center}
+.counter{position:absolute;left:0;right:0;bottom:0;height:62px;display:flex;align-items:center;justify-content:center;gap:12px;border-top:8px solid #a86d43;background:#d69a66;font-size:24px}
+.counter span{display:grid;place-items:center;width:46px;height:40px;border-radius:12px;background:#fff4df;box-shadow:0 3px 0 #ae784d}
+.panel{margin-top:14px;padding:18px;border:1px solid var(--border);border-radius:22px;background:var(--card)}
+.head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.timer{padding:8px 11px;border-radius:12px;background:var(--tint2);font-weight:900;white-space:nowrap}
+.bar{height:9px;margin-top:14px;overflow:hidden;border-radius:10px;background:var(--tint)}
+.fill{height:100%;width:100%;border-radius:inherit;background:var(--green);transition:width .3s linear}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:88px;padding:8px 10px;border:2px solid var(--border);border-radius:16px;background:var(--tint);font-size:13px;font-weight:800;text-align:center}
+.chip b{font-size:46px;font-weight:400;line-height:1.1}
+.dish{display:grid;place-items:center;width:104px;height:104px;flex-shrink:0;border-radius:26px;background:var(--tint2);font-size:68px}
+@media (max-width:420px){.dish{width:76px;height:76px;font-size:48px}.chip{min-width:78px}}
+.chip.done{border-color:#7fc17f;background:var(--ok)}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.ing{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:88px;padding:8px 4px;border:2px solid var(--border);border-radius:16px;background:var(--tint);font-size:12px;font-weight:800}
+.ing:active{transform:scale(.96)}
+.ing.sel{border-color:var(--orange);background:var(--tint2)}
+.ing .e{font-size:42px;line-height:1.1}
+.pot{margin-top:14px;padding:12px;border-radius:14px;background:var(--tint);font-size:13px;font-weight:800}
+.pot div{margin-top:5px;color:var(--muted);font-weight:600}
+.actions{display:grid;grid-template-columns:1.4fr 1fr;gap:9px;margin-top:14px}
+.actions .wide{grid-column:1/-1}
+.primary,.secondary{min-height:46px;padding:10px 14px;border:0;border-radius:14px;font-weight:900}
+.primary{background:var(--orange);color:var(--btntext);box-shadow:0 4px 0 #c97a2e}
+.primary:active{transform:translateY(2px);box-shadow:none}
+.secondary{border:1px solid var(--border);background:var(--tint)}
+.msg{min-height:20px;margin:12px 0 0;color:var(--muted);font-size:13px;font-weight:700}
+.msg.success{color:#4fa662}.msg.error{color:#d95f4f}
+.levels{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-top:12px;max-height:340px;overflow-y:auto}
+.lv{min-height:50px;border:1px solid var(--border);border-radius:12px;background:var(--tint);font-weight:900}
+.lv.cur{border:2px solid var(--orange);background:var(--tint2)}
+.lv.done{background:var(--ok)}
+.shop{display:flex;align-items:center;gap:12px;margin-top:12px;padding:12px;border:1px solid var(--border);border-radius:16px;background:var(--tint)}
+.shop .ic{display:grid;place-items:center;width:46px;height:46px;flex-shrink:0;border-radius:13px;background:#ffe7bc;font-size:25px}
+.shop .tx{flex:1;min-width:0;display:flex;flex-direction:column;font-size:12px;color:var(--muted)}
+.shop .tx strong{color:var(--text);font-size:14px}
+.buy{padding:10px;border:0;border-radius:11px;background:#ffdf9b;color:#51361e;font-weight:900}
+.reset{width:100%;margin-top:12px;padding:10px;border:1px solid var(--border);border-radius:12px;background:var(--card);color:var(--muted);font-weight:800}
+footer{padding:20px 8px 0;color:var(--muted);font-size:12px;text-align:center}
+.modal{position:fixed;inset:0;z-index:10;display:grid;place-items:center;padding:20px;background:#29190fb0}
+.modal.hidden{display:none}
+.mcard{width:min(100%,360px);padding:26px 22px;border-radius:24px;background:var(--card);text-align:center;animation:pop .2s ease-out}
+.mcard .me{font-size:60px}
+.mcard p{color:var(--muted);line-height:1.6}
+.mcard button{width:100%;margin-top:8px}
+@keyframes bounce{0%,100%{transform:translateX(-50%)}45%{transform:translateX(-50%) translateY(-16px)}}
+@keyframes pop{from{transform:scale(.88);opacity:0}to{transform:scale(1);opacity:1}}
+@media (max-width:420px){.game{width:min(100% - 16px,760px)}.panel{padding:14px}.levels{grid-template-columns:repeat(4,minmax(0,1fr))}.sub{font-size:11px}}
+</style>
+</head>
+<body>
+<main class="game">
+  <header class="top">
+    <div class="brand"><span class="brand-icon">🐻</span><div><h1>Lāča virtuve</h1><p class="sub">Pagatavo gardumus savam draugam!</p></div></div>
+    <div class="coins">🪙 <span id="coins">0</span></div>
+  </header>
+  <section class="stats">
+    <div class="stat"><span>Līmenis</span><strong id="level">1</strong></div>
+    <div class="stat"><span>Rekords</span><strong id="best">0 ⭐</strong></div>
+    <div class="stat"><span>Virtuve</span><strong id="kitchen">1</strong></div>
+  </section>
+  <section class="scene">
+    <div class="sun"></div>
+    <div class="speech" id="speech">Sveiks! Pagatavosim kaut ko gardu?</div>
+    <div class="bear" id="bear">🐻</div>
+    <div class="counter"><span>🥣</span><span>🥕</span><span>🍎</span><span>🍯</span></div>
+  </section>
+  <section class="panel">
+    <div class="head">
+      <div class="dish" id="dish">🍲</div><div style="flex:1;min-width:0"><h2 id="rTitle"></h2><p class="sub" id="rDesc"></p></div>
+      <div class="timer">⏱ <span id="timer">60</span>s</div>
+    </div>
+    <div class="bar"><div class="fill" id="fill"></div></div>
+    <h3>Recepte</h3>
+    <div class="chips" id="need"></div>
+    <h3>Izvēlies sastāvdaļas</h3>
+    <div class="grid" id="ings"></div>
+    <div class="pot">Katlā:<div id="inPot"></div></div>
+    <div class="actions">
+      <button id="startBtn" class="primary wide">▶ Sākt līmeni</button>
+      <button id="cookBtn" class="primary">🍲 Gatavot!</button>
+      <button id="clearBtn" class="secondary">↩ Notīrīt</button>
+    </div>
+    <p id="msg" class="msg" role="status" aria-live="polite"></p>
+  </section>
+  <section class="panel">
+    <h2>📚 Līmeņi</h2>
+    <p class="sub">Pabeidz līmeni, lai atvērtu nākamo. Jo tālāk, jo vairāk sastāvdaļu jāatrod!</p>
+    <div id="levels" class="levels"></div>
+  </section>
+  <section class="panel">
+    <h2>🛠️ Virtuves veikals</h2>
+    <p class="sub">Uzlabojumi palīdz nopelnīt vairāk monētu.</p>
+    <div class="shop">
+      <div class="ic">🍳</div>
+      <div class="tx"><strong>Labāks katls</strong><span>Par katru uzvaru +5 monētas.</span><span>Uzlabojuma līmenis: <b id="potLv">0</b></span></div>
+      <button id="buyBtn" class="buy">🪙 50</button>
+    </div>
+    <button id="resetBtn" class="reset">Sākt spēli no jauna</button>
+  </section>
+  <footer>🐾 Lāča virtuve · Spēlē, gatavo un krāj monētas!</footer>
+</main>
+
+<div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+  <div class="mcard">
+    <div class="me" id="mEmoji">🎉</div>
+    <h2 id="mTitle"></h2>
+    <p id="mText"></p>
+    <button id="mOk" class="primary">Turpināt</button>
+    <button id="mNo" class="secondary">Atcelt</button>
+  </div>
+</div>
+
+<script>
+"use strict";
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var I=[["oats","🌾","Auzu pārslas"],["milk","🥛","Piens"],["apple","🍎","Ābols"],["honey","🍯","Medus"],["carrot","🥕","Burkāns"],["water","💧","Ūdens"],["berries","🫐","Mellenes"],["flour","🥣","Milti"],["banana","🍌","Banāns"],["potato","🥔","Kartupelis"],["egg","🥚","Ola"],["cheese","🧀","Siers"],["bread","🍞","Maize"],["butter","🧈","Sviests"],["tomato","🍅","Tomāts"],["cucumber","🥒","Gurķis"],["corn","🌽","Kukurūza"],["mushroom","🍄","Sēnes"],["strawberry","🍓","Zemene"],["orange","🍊","Apelsīns"],["lemon","🍋","Citrons"],["pear","🍐","Bumbieris"],["grapes","🍇","Vīnogas"],["melon","🍉","Arbūzs"],["pineapple","🍍","Ananāss"],["cherry","🍒","Ķirši"],["peach","🍑","Persiks"],["coconut","🥥","Kokosrieksts"],["onion","🧅","Sīpols"],["fish","🐟","Zivs"],["rice","🍚","Rīsi"],["pasta","🍝","Makaroni"],["choc","🍫","Šokolāde"],["nuts","🥜","Rieksti"],["broccoli","🥦","Brokoļi"],["pepper","🫑","Paprika"],["pumpkin","🎃","Ķirbis"],["chicken","🍗","Vistas gaļa"]];
+  var ings=I.map(function(a){return{id:a[0],e:a[1],n:a[2]}});
+  var RD=[
+"Lāča brokastis|🥣|oats,milk","Medus ābols|🍏|apple,honey","Burkānu zupa|🍲|carrot,water","Banānu piens|🥤|banana,milk","Siera sviestmaize|🥪|bread,cheese",
+"Sviesta maize|🍞|bread,butter","Ceptā ola|🍳|egg,butter","Zemeņu piens|🥤|strawberry,milk","Ābolu sula|🧃|apple,water","Apelsīnu sula|🧃|orange,water",
+"Citronu dzēriens|🍹|lemon,water","Ķirbju zupa|🍲|pumpkin,water","Kartupeļu biezenis|🥣|potato,butter","Kukurūza ar sviestu|🍽️|corn,butter","Tomātu salāti|🥗|tomato,cucumber",
+"Siera makaroni|🍝|pasta,cheese","Medus tēja|🍵|honey,water","Ogu sula|🧃|berries,water","Riekstu sviests|🫙|nuts,butter","Šokolādes piens|🥛|choc,milk",
+"Arbūza dzēriens|🍹|melon,water","Ananāsu sula|🧃|pineapple,water","Persiku jogurts|🍨|peach,milk","Vīnogu sula|🧃|grapes,water","Rīsu pudiņš|🍮|rice,milk",
+"Zivs ar citronu|🍽️|fish,lemon","Sēņu zupa|🍲|mushroom,water","Ķiršu kompots|🍹|cherry,water","Kokosa konfekte|🍬|coconut,choc","Bumbieru kompots|🍹|pear,water",
+"Ogu putra|🥣|oats,milk,berries","Medus pankūkas|🥞|flour,milk,honey","Augļu salāti|🥗|apple,berries,banana","Dārzeņu sautējums|🍲|carrot,potato,water","Siera omlete|🍳|egg,milk,cheese",
+"Siera pica|🍕|flour,cheese,tomato","Tomātu zupa|🍲|tomato,onion,water","Grilēta sviestmaize|🥪|bread,cheese,butter","Banānu pankūkas|🥞|banana,egg,flour","Zemeņu smūtijs|🥤|strawberry,banana,milk",
+"Ābolu pīrāgs|🥧|apple,flour,butter","Mellenu pīrāgs|🥧|berries,flour,egg","Rīsi ar dārzeņiem|🍛|rice,carrot,corn","Vistas zupa|🍲|chicken,carrot,water","Vistas rīsi|🍛|chicken,rice,pepper",
+"Zivs ar kartupeļiem|🍽️|fish,potato,lemon","Makaroni ar tomātu|🍝|pasta,tomato,onion","Sēņu omlete|🍳|mushroom,egg,butter","Ķirbju biezzupa|🍲|pumpkin,onion,milk","Brokoļu zupa|🍲|broccoli,potato,water",
+"Šokolādes banāns|🍨|banana,choc,nuts","Riekstu cepumi|🍪|flour,nuts,honey","Šokolādes cepumi|🍪|flour,choc,butter","Kokosa cepumi|🍪|coconut,flour,honey","Citronu kēkss|🧁|lemon,flour,egg",
+"Apelsīnu salāti|🥗|orange,pear,grapes","Tropu salāti|🥗|pineapple,melon,banana","Persiku kokteilis|🍹|peach,pineapple,water","Ķiršu pīrāgs|🥧|cherry,flour,butter","Grieķu salāti|🥗|tomato,cucumber,cheese",
+"Kukurūzas salāti|🥗|corn,tomato,pepper","Auzu cepumi|🍪|oats,honey,butter","Paprikas sautējums|🍲|pepper,onion,potato","Vistas sviestmaize|🥪|chicken,bread,tomato","Zivju sviestmaize|🥪|fish,bread,cucumber",
+"Lielā lāča kūka|🎂|flour,milk,honey,berries","Šokolādes kūka|🎂|flour,choc,egg,butter","Zemeņu kūka|🍰|flour,strawberry,egg,milk","Burkānu kūka|🍰|carrot,flour,egg,nuts","Ābolu kūka|🍰|apple,flour,egg,honey",
+"Banānu kēkss|🧁|banana,flour,egg,butter","Mežacūku pica|🍕|flour,cheese,tomato,mushroom","Dārzeņu pica|🍕|flour,pepper,corn,cheese","Vistas nūdeļu zupa|🍜|chicken,pasta,carrot,water","Makaroni ar sēnēm|🍝|pasta,cheese,mushroom,butter",
+"Bolonjas makaroni|🍝|pasta,tomato,onion,chicken","Rīsu sautējums|🍛|rice,chicken,pepper,onion","Zivju zupa|🍲|fish,potato,carrot,water","Dārzeņu zupa|🍲|carrot,potato,onion,broccoli","Ķirbju pīrāgs|🥧|pumpkin,flour,egg,honey",
+"Augļu kokteilis|🍹|banana,strawberry,orange,milk","Vasaras salāti|🥗|tomato,cucumber,pepper,cheese","Tropu deserts|🍨|pineapple,coconut,melon,honey","Šokolādes pankūkas|🥞|flour,milk,choc,egg","Riekstu kūka|🍰|flour,nuts,honey,butter",
+"Ķiršu kūka|🍰|cherry,flour,egg,choc","Persiku pīrāgs|🥧|peach,flour,butter,honey","Vistas sautējums|🍲|chicken,potato,carrot,onion","Zivs ar rīsiem|🍣|fish,rice,lemon,broccoli","Kukurūzas zupa|🍲|corn,potato,milk,butter",
+"Siera zupa|🍲|cheese,potato,onion,milk","Dārzeņu omlete|🍳|egg,tomato,pepper,cheese","Sēņu risoto|🍚|rice,mushroom,onion,cheese","Tropu putra|🥣|oats,coconut,banana,pineapple","Vīnogu salāti|🥗|grapes,apple,pear,orange",
+"Ogu pudiņš|🍮|berries,milk,rice,honey","Ķirbju kūka|🍰|pumpkin,flour,milk,nuts","Sātīgā sviestmaize|🥪|bread,cheese,egg,tomato","Meža ogu saldējums|🍨|berries,strawberry,cherry,milk","Lāča svētku mielasts|🍽️|pumpkin,chicken,potato,honey"
+  ];
+  var recipes=RD.map(function(s){var p=s.split("|"),f=p[2].split(",");return{n:p[0],e:p[1],f:f,r:10+f.length*10}});
+  var KEY="bearKitchenSaveV3",MAX=recipes.length;
+  function def(){return{coins:0,level:1,best:0,pot:0,done:[]}}
+  function load(){
+    try{
+      var s=JSON.parse(localStorage.getItem(KEY));
+      if(s&&typeof s==="object"){
+        return{coins:Math.max(0,+s.coins||0),level:Math.min(MAX,Math.max(1,+s.level||1)),best:Math.max(0,+s.best||0),pot:Math.max(0,+s.pot||0),
+          done:Array.isArray(s.done)?s.done.filter(function(n){return n>=1&&n<=MAX}):[]};
+      }
+    }catch(e){}
+    return def();
+  }
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}}
+  var st=load(),sel=[],choices=[],left=60,total=60,tid=null,active=false,mAct=null;
+
+  function recipe(l){return recipes[((l||st.level)-1)%recipes.length]}
+  function ing(id){return ings.filter(function(i){return i.id===id})[0]}
+  function timeFor(l){return 40+recipe(l).f.length*10}
+  function makeChoices(){
+    var need=recipe().f,total=need.length===2?9:12;
+    var pool=ings.filter(function(i){return need.indexOf(i.id)<0}).sort(function(){return Math.random()-.5});
+    return need.map(function(id){return ing(id)}).concat(pool.slice(0,total-need.length)).sort(function(){return Math.random()-.5});
+  }
+  function cost(){return 50+st.pot*50}
+  function msg(t,c){var m=$("msg");m.textContent=t;m.className="msg"+(c?" "+c:"")}
+  function say(t){$("speech").textContent=t}
+
+  function status(){
+    $("coins").textContent=st.coins;$("level").textContent=st.level;$("best").textContent=st.best+" ⭐";
+    $("kitchen").textContent=st.pot+1;$("potLv").textContent=st.pot;
+    $("buyBtn").textContent="🪙 "+cost();$("buyBtn").disabled=st.coins<cost();
+  }
+  function timer(){
+    $("timer").textContent=left;
+    $("fill").style.width=Math.max(0,left/total*100)+"%";
+    $("fill").style.background=left<=15?"#df6553":"#5c9e64";
+  }
+  function drawRecipe(){
+    var r=recipe();
+    $("rTitle").textContent=r.n;$("rDesc").textContent="Atrodi "+r.f.length+" sastāvdaļas!";$("dish").textContent=r.e;
+    $("need").innerHTML=r.f.map(function(id){
+      var i=ing(id),ok=sel.indexOf(id)>-1;
+      return '<span class="chip'+(ok?' done':'')+'"><b>'+i.e+'</b>'+(ok?'✓ ':'')+i.n+'</span>';
+    }).join("");
+  }
+  function drawIngs(){
+    $("ings").innerHTML=choices.map(function(i){
+      var s=sel.indexOf(i.id)>-1;
+      return '<button type="button" class="ing'+(s?' sel':'')+'" data-i="'+i.id+'" aria-pressed="'+s+'"'+(active?'':' disabled')+'><span class="e">'+i.e+'</span><span>'+i.n+'</span><span>'+(s?'✓ Izvēlēts':'Pievienot')+'</span></button>';
+    }).join("");
+  }
+  function drawPot(){
+    $("inPot").textContent=sel.length?sel.map(function(id){var i=ing(id);return i.e+" "+i.n}).join(" · "):"Vēl nekas nav pievienots";
+    drawRecipe();
+  }
+  function drawLevels(){
+    var h="";
+    for(var l=1;l<=MAX;l++){
+      var un=l<=st.best+1,dn=st.done.indexOf(l)>-1;
+      h+='<button type="button" class="lv'+(l===st.level?' cur':'')+(dn?' done':'')+'" data-l="'+l+'"'+(un?'':' disabled')+' aria-label="Līmenis '+l+(un?'':', slēgts')+'">'+(dn?'⭐':un?'🍲':'🔒')+'<br>'+l+'</button>';
+    }
+    $("levels").innerHTML=h;
+  }
+  function buttons(){
+    $("cookBtn").disabled=!active;$("clearBtn").disabled=!active;
+    $("startBtn").textContent=active?"↻ Sākt līmeni no jauna":"▶ Sākt līmeni";
+  }
+  function all(){status();drawIngs();drawPot();drawLevels();timer();buttons()}
+
+  function stop(){if(tid!==null){clearInterval(tid);tid=null}}
+  function modal(e,t,x,ok,act,cancel){
+    $("mEmoji").textContent=e;$("mTitle").textContent=t;$("mText").textContent=x;$("mOk").textContent=ok;
+    $("mNo").style.display=cancel?"":"none";
+    mAct=act;$("modal").classList.remove("hidden");$("mOk").focus();
+  }
+  function hide(){$("modal").classList.add("hidden")}
+
+  function prepare(l){
+    st.level=l;sel=[];active=false;stop();choices=makeChoices();
+    total=left=timeFor(l);
+    $("bear").className="bear";say("Esmu izsalcis! 🍯");
+    msg("Spied „Sākt līmeni“, kad esi gatavs. Laiks: "+total+" s.");
+    all();save();
+  }
+  function begin(){
+    sel=[];active=true;stop();left=total=timeFor(st.level);
+    $("bear").className="bear";say("Ātri, ātri! 🍯");
+    msg("Izvēlies visas receptē norādītās sastāvdaļas.");
+    all();
+    tid=setInterval(function(){
+      if(!active)return;
+      left-=1;timer();
+      if(left<=0){
+        stop();active=false;drawIngs();buttons();
+        $("bear").className="bear sad";
+        msg("Laiks beidzies! Mēģini vēlreiz.","error");say("Ak vai! Vajag vairāk laika!");
+        modal("⏰","Laiks beidzies!","Šoreiz nepaspēji. Pamēģini vēlreiz!","Mēģināt vēlreiz",begin,false);
+      }
+    },1000);
+  }
+  function pick(l){
+    if(l<1||l>MAX)return;
+    if(l>st.best+1){msg("Vispirms pabeidz iepriekšējo līmeni!","error");return}
+    prepare(l);
+  }
+  function toggle(id){
+    if(!active)return;
+    var k=sel.indexOf(id);
+    if(k>-1)sel.splice(k,1);else sel.push(id);
+    drawIngs();drawPot();
+  }
+  function cook(){
+    if(!active){msg("Vispirms nospied „Sākt līmeni“!","error");return}
+    var r=recipe(),a=r.f.slice().sort().join(),b=sel.slice().sort().join();
+    if(a!==b){
+      left=Math.max(1,left-5);timer();
+      msg("Recepte nav pareiza! Pārbaudi sastāvdaļas. −5 sekundes.","error");say("Hmm... kaut kas nav pareizi!");
+      return;
+    }
+    active=false;stop();
+    var speed=Math.floor(left/10),reward=r.r+st.pot*5+speed,fin=st.level,last=fin>=MAX;
+    st.coins+=reward;st.best=Math.max(st.best,fin);
+    if(st.done.indexOf(fin)<0)st.done.push(fin);
+    if(!last)st.level=fin+1;
+    save();all();
+    var bear=$("bear");bear.className="bear";void bear.offsetWidth;bear.className="bear happy";
+    say("Ņam, ņam! Cik garšīgi!");msg("Lieliski! +"+reward+" monētas!","success");
+    modal("🎉",last?"Tu esi meistars!":"Lācis ir paēdis!",
+      "Saņēmi "+reward+" monētas"+(speed?" (ātruma bonuss +"+speed+")":"")+"."+(last?" Tu pabeidzi visus "+MAX+" līmeņus!":" Nākamais ir "+(fin+1)+". līmenis!"),
+      last?"Spēlēt vēlreiz":"Nākamais līmenis",
+      function(){prepare(last?1:fin+1)},false);
+  }
+  function buy(){
+    var c=cost();
+    if(st.coins<c){msg("Nepietiek monētu!","error");return}
+    st.coins-=c;st.pot+=1;save();status();
+    msg("Katls uzlabots! Tagad +"+(st.pot*5)+" papildu monētas par uzvaru.","success");
+  }
+  function reset(){
+    modal("⚠️","Sākt no jauna?","Viss progress un monētas tiks dzēsti.","Jā, dzēst",function(){
+      stop();st=def();prepare(1);
+    },true);
+  }
+
+  $("ings").addEventListener("click",function(e){var b=e.target.closest("[data-i]");if(b)toggle(b.dataset.i)});
+  $("levels").addEventListener("click",function(e){var b=e.target.closest("[data-l]");if(b&&!b.disabled)pick(+b.dataset.l)});
+  $("startBtn").addEventListener("click",begin);
+  $("cookBtn").addEventListener("click",cook);
+  $("clearBtn").addEventListener("click",function(){if(!active)return;sel=[];drawIngs();drawPot();msg("Katls ir notīrīts.")});
+  $("buyBtn").addEventListener("click",buy);
+  $("resetBtn").addEventListener("click",reset);
+  $("mOk").addEventListener("click",function(){var a=mAct;mAct=null;hide();if(a)a()});
+  $("mNo").addEventListener("click",function(){mAct=null;hide()});
+
+  prepare(st.level);
+})();
+</script>
+<script>if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})}</script>
+</body>
+</html>
